@@ -1,0 +1,16 @@
+# Ativa o motor de reescrita
+RewriteEngine On
+
+# Base da aplicação
+RewriteBase /virtuavenda/virtuavenda-api/
+
+# Se a solicitação for para um arquivo real ou diretório, não faz nada
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Se a solicitação for para public/index.php, não faz nada
+RewriteRule ^public/index\.php$ - [L]
+
+# Redireciona todas as outras solicitações para public/index.php
+RewriteRule ^(.*)$ public/index.php [QSA,L]

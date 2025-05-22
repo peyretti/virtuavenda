@@ -1,0 +1,67 @@
+# VirtuaVenda - Configurações Apache (Versão Simples)
+
+# Verificar se mod_rewrite está disponível
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    
+    # URLs Amigáveis básicas
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    
+    # Produto: /produto/123 -> produto.php?id=123
+    RewriteRule ^produto/([0-9]+)/?$ produto.php?id=$1 [L,QSA]
+    
+    # Categoria: /categoria/123 -> categoria.php?id=123
+    RewriteRule ^categoria/([0-9]+)/?$ categoria.php?id=$1 [L,QSA]
+    
+    # Páginas simples
+    RewriteRule ^sobre/?$ sobre.php [L]
+    RewriteRule ^contato/?$ contato.php [L]
+    RewriteRule ^carrinho/?$ carrinho.php [L]
+    RewriteRule ^produtos/?$ produtos.php [L]
+</IfModule>
+
+# Configurações básicas de segurança
+<FilesMatch "^(\.env|\.git|config\.php)$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order Allow,Deny
+        Deny from all
+    </IfModule>
+</FilesMatch>
+
+# Desabilitar listagem de diretórios
+<IfModule mod_autoindex.c>
+    Options -Indexes
+</IfModule>
+
+# Configurações de cache básicas
+<IfModule mod_expires.c>
+    ExpiresActive on
+    ExpiresByType image/png "access plus 1 month"
+    ExpiresByType image/jpg "access plus 1 month"
+    ExpiresByType image/jpeg "access plus 1 month"
+    ExpiresByType image/gif "access plus 1 month"
+    ExpiresByType text/css "access plus 1 week"
+    ExpiresByType application/javascript "access plus 1 week"
+</IfModule>
+
+# Compressão básica
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/plain
+    AddOutputFilterByType DEFLATE text/html
+    AddOutputFilterByType DEFLATE text/css
+    AddOutputFilterByType DEFLATE application/javascript
+</IfModule>
+
+# Headers básicos de segurança
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options nosniff
+    Header always set X-Frame-Options DENY
+</IfModule>
+
+# Páginas de erro simples
+ErrorDocument 404 /pages/404.php
+ErrorDocument 500 /pages/500.php
